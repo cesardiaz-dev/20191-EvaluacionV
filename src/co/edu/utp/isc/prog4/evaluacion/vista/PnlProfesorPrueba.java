@@ -5,6 +5,11 @@
  */
 package co.edu.utp.isc.prog4.evaluacion.vista;
 
+import co.edu.utp.isc.prog4.evaluacion.controlador.ProfesorControlador;
+import co.edu.utp.isc.prog4.evaluacion.modelo.Prueba;
+import co.edu.utp.isc.prog4.evaluacion.patrones.ProfesorVisitador;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author utp
@@ -29,11 +34,12 @@ public class PnlProfesorPrueba extends javax.swing.JPanel {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtMateria = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        txtNombre = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jSpinner1 = new javax.swing.JSpinner();
+        spnNotaMaxima = new javax.swing.JSpinner();
+        btnAgregarPrueba = new javax.swing.JButton();
         jSplitPane1 = new javax.swing.JSplitPane();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -49,8 +55,6 @@ public class PnlProfesorPrueba extends javax.swing.JPanel {
         jPanel4 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
-        jPanel3 = new javax.swing.JPanel();
-        btnAgregarPregunta = new javax.swing.JButton();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -59,6 +63,15 @@ public class PnlProfesorPrueba extends javax.swing.JPanel {
         jLabel2.setText("Nombre");
 
         jLabel3.setText("Nota maxima");
+
+        spnNotaMaxima.setModel(new javax.swing.SpinnerNumberModel(5.0d, 0.0d, null, 0.5d));
+
+        btnAgregarPrueba.setText("Agregar Prueba");
+        btnAgregarPrueba.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarPruebaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -70,16 +83,17 @@ public class PnlProfesorPrueba extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1))
+                        .addComponent(txtMateria))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 256, Short.MAX_VALUE))
+                        .addComponent(spnNotaMaxima, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 147, Short.MAX_VALUE)
+                        .addComponent(btnAgregarPrueba))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField2)))
+                        .addComponent(txtNombre)))
                 .addContainerGap())
         );
 
@@ -91,15 +105,16 @@ public class PnlProfesorPrueba extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtMateria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(spnNotaMaxima, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAgregarPrueba))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -192,7 +207,7 @@ public class PnlProfesorPrueba extends javax.swing.JPanel {
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 70, Short.MAX_VALUE)
+            .addGap(0, 100, Short.MAX_VALUE)
         );
 
         pnlTarjetas.add(jPanel4, "abierta");
@@ -207,18 +222,65 @@ public class PnlProfesorPrueba extends javax.swing.JPanel {
         jSplitPane1.setRightComponent(jPanel2);
 
         add(jSplitPane1, java.awt.BorderLayout.CENTER);
-
-        jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
-
-        btnAgregarPregunta.setText("Agregar Prueba");
-        jPanel3.add(btnAgregarPregunta);
-
-        add(jPanel3, java.awt.BorderLayout.PAGE_END);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnAgregarPruebaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarPruebaActionPerformed
+        String materia = txtMateria.getText().trim();
+        String nombre = txtNombre.getText().trim();
+        Double nota = (Double) spnNotaMaxima.getValue();
+        try {
+            Prueba p = null;
+            if (idPrueba == null) {
+                // Nuevo
+                p = ProfesorControlador.getInstance()
+                        .crearPrueba(materia, nombre, nota);
+            } else {
+                // Existente
+                p = ProfesorControlador.getInstance()
+                        .consultarPrueba(idPrueba);
+                p.setMateria(materia);
+                p.setNombre(nombre);
+                p.setNotaMaxima(nota);
+            }
+            JOptionPane.showMessageDialog(this, "Prueba creada correctamente");
+            System.out.println("Prueba: " + p);
+
+            //TODO actualizar la lista de pruebas
+            visitador.cargarTablaPruebas();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Prueba no pudo ser creada");
+            ex.printStackTrace();
+        }
+    }//GEN-LAST:event_btnAgregarPruebaActionPerformed
+
+    public void setVisitador(ProfesorVisitador visitador) {
+        this.visitador = visitador;
+    }
+
+    public void limpiarCampos() {
+        idPrueba = null;
+        txtMateria.setText("");
+        txtNombre.setText("");
+        spnNotaMaxima.setValue(5d);
+        txtMateria.requestFocus();
+    }
+
+    public void cargarPrueba(Long id) {
+        Prueba p = ProfesorControlador.getInstance()
+                .consultarPrueba(id);
+        if (p != null) {
+            idPrueba = p.getId();
+            txtMateria.setText(p.getMateria());
+            txtNombre.setText(p.getNombre());
+            spnNotaMaxima.setValue(p.getNotaMaxima());
+        } else {
+            limpiarCampos();
+        }
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAgregarPregunta;
+    private javax.swing.JButton btnAgregarPrueba;
     private javax.swing.JButton jButton1;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
@@ -229,18 +291,20 @@ public class PnlProfesorPrueba extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSpinner jSpinner1;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JPanel pnlTarjetas;
+    private javax.swing.JSpinner spnNotaMaxima;
     private javax.swing.JSpinner spnPeso;
     private javax.swing.JTextField txtDescripcion;
+    private javax.swing.JTextField txtMateria;
+    private javax.swing.JTextField txtNombre;
     // End of variables declaration//GEN-END:variables
+    private ProfesorVisitador visitador;
+    private Long idPrueba = null;
+
 }

@@ -5,19 +5,26 @@
  */
 package co.edu.utp.isc.prog4.evaluacion.vista;
 
+import co.edu.utp.isc.prog4.evaluacion.controlador.ProfesorControlador;
+import co.edu.utp.isc.prog4.evaluacion.modelo.Prueba;
 import co.edu.utp.isc.prog4.evaluacion.patrones.PrincipalVisitador;
+import co.edu.utp.isc.prog4.evaluacion.patrones.ProfesorVisitador;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author utp
  */
-public class PnlProfesor extends javax.swing.JPanel {
+public class PnlProfesor extends javax.swing.JPanel implements ProfesorVisitador {
 
     /**
      * Creates new form Profesor
      */
     public PnlProfesor() {
         initComponents();
+        pnlProfesorPrueba1.setVisitador(this);
     }
 
     /**
@@ -39,7 +46,7 @@ public class PnlProfesor extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblPruebas = new javax.swing.JTable();
         jPanel6 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
+        btnEliminarPrueba = new javax.swing.JButton();
         pnlTarjetas = new javax.swing.JPanel();
         pnlProfesorPrueba1 = new co.edu.utp.isc.prog4.evaluacion.vista.PnlProfesorPrueba();
 
@@ -69,6 +76,11 @@ public class PnlProfesor extends javax.swing.JPanel {
         jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
         btnNuevaPrueba.setText("Nuevo");
+        btnNuevaPrueba.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevaPruebaActionPerformed(evt);
+            }
+        });
         jPanel5.add(btnNuevaPrueba);
 
         jPanel1.add(jPanel5, java.awt.BorderLayout.NORTH);
@@ -77,26 +89,36 @@ public class PnlProfesor extends javax.swing.JPanel {
 
         tblPruebas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null}
+                {null, null, null}
             },
             new String [] {
-                "Materia", "Nombre"
+                "Id", "Materia", "Nombre"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
+        tblPruebas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tblPruebasMouseReleased(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblPruebas);
 
         jPanel1.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
-        jButton2.setText("Eliminar");
-        jPanel6.add(jButton2);
+        btnEliminarPrueba.setText("Eliminar");
+        btnEliminarPrueba.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarPruebaActionPerformed(evt);
+            }
+        });
+        jPanel6.add(btnEliminarPrueba);
 
         jPanel1.add(jPanel6, java.awt.BorderLayout.SOUTH);
 
@@ -114,14 +136,42 @@ public class PnlProfesor extends javax.swing.JPanel {
         visitador.cambiarTarjeta("inicio");
     }//GEN-LAST:event_btnCerrarSesionActionPerformed
 
+    private void btnEliminarPruebaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarPruebaActionPerformed
+        if (tblPruebas.getSelectedRowCount() == 1
+                && JOptionPane.showConfirmDialog(this, "Esta seguro en eliminar?") == JOptionPane.YES_OPTION) {
+            int row = tblPruebas.getSelectedRow();
+            try {
+                ProfesorControlador.getInstance().eliminarPrueba((Long) tblPruebas.getValueAt(row, 0));
+                JOptionPane.showMessageDialog(this, "Prueba eliminada");
+                cargarTablaPruebas();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Prueba no puede ser eliminada");
+                ex.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_btnEliminarPruebaActionPerformed
+
+    private void btnNuevaPruebaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaPruebaActionPerformed
+        pnlProfesorPrueba1.limpiarCampos();
+    }//GEN-LAST:event_btnNuevaPruebaActionPerformed
+
+    private void tblPruebasMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPruebasMouseReleased
+        // TODO add your handling code here:
+        if(evt.getClickCount() > 2){
+            int row = tblPruebas.getSelectedRow();
+            pnlProfesorPrueba1.cargarPrueba((Long) tblPruebas.getValueAt(row, 0));
+        }
+    }//GEN-LAST:event_tblPruebasMouseReleased
+
     public void setVisitador(PrincipalVisitador visitador) {
         this.visitador = visitador;
+        cargarTablaPruebas();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCerrarSesion;
+    private javax.swing.JButton btnEliminarPrueba;
     private javax.swing.JButton btnNuevaPrueba;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -134,4 +184,23 @@ public class PnlProfesor extends javax.swing.JPanel {
     private javax.swing.JTable tblPruebas;
     // End of variables declaration//GEN-END:variables
     private PrincipalVisitador visitador;
+
+    @Override
+    public void cargarTablaPruebas() {
+        List<Prueba> pruebas = ProfesorControlador.getInstance().listarPruebas();
+
+        // Borro los datos existentes de la tabla
+        while (tblPruebas.getRowCount() > 0) {
+            ((DefaultTableModel) tblPruebas.getModel()).removeRow(0);
+        }
+
+        // Agrego los datos que fueron consultados
+        for (Prueba prueba : pruebas) {
+            ((DefaultTableModel) tblPruebas.getModel()).addRow(new Object[]{
+                prueba.getId(),
+                prueba.getMateria(),
+                prueba.getNombre()
+            });
+        }
+    }
 }
